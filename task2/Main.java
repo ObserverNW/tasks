@@ -1,15 +1,16 @@
 package task2;
-
+import java.nio.file.*;
 import java.io.*;
-import java.util.Scanner;
-
+import java.util.List;
 public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Первый путь: ");
-        String firstWay = scanner.nextLine();
-        System.out.println("Второй путь: ");
-        String secondWay = scanner.nextLine();
+    static int cLine;
+    public static void main(String[] args) throws IOException {
+       if(args.length  < 2) throw new RuntimeException("Обязательно 2 аргумента (пути к файлу)");
+        String firstWay = args[0];
+        String secondWay = args[1];
+
+        List<String> lines = Files.readAllLines(new File(secondWay).toPath());
+        cLine =  lines.size();
 
         String[] ex = readCircleCoordinate(firstWay);
         float[] coord = new float[ex.length];
@@ -22,15 +23,13 @@ public class Main {
         float x1 = 0;
         float y1 = 0;
 
-        String[][] points = readPointsCoordinate(secondWay);
-        int CountLine = CountLine(secondWay);
-        float[][] coord2 = new float[CountLine][2];
-        for (int i = 0; i < CountLine; i++) {
+        var points = readPointsCoordinate(secondWay);
+        float[][] coord2 = new float[cLine][2];
+        for (int i = 0; i < cLine; i++) {
             for (int w = 0; w < 2; w++) {
                 coord2[i][w] = Float.parseFloat(points[i][w]);
             }
         }
-
         for (int i = 0; i < coord2.length; i++) {
             x1 = coord2[i][0]  - x;
             y1 = coord2[i][1] - y;
@@ -39,14 +38,19 @@ public class Main {
             if (hyp < r) {
                 System.out.println("точка внутри");
             } else if (hyp == r) {
-                System.out.println(" точка лежит на окружности");
+                System.out.println("точка лежит на окружности");
             } else {
                 System.out.println("точка снаружи");
             }
         }
     }
-
     public static String[] readCircleCoordinate(String firstWay) {
+        if (firstWay == null) {
+            throw new RuntimeException("Отсутствие аргумента");
+        }
+        if (Files.notExists(Path.of(firstWay))) {
+            throw new RuntimeException("Неверный путь");
+        }
         BufferedReader br = null;
         String[] ex = null;
         try {
@@ -62,36 +66,17 @@ public class Main {
         }
         return ex;
     }
-    public static int CountLine(String secondWay) {
+    public static String[][] readPointsCoordinate(String secondWay) throws IOException {
+        String[] ex1 = null;
+        String[][] ex2 = new String[cLine][2];
         BufferedReader br = null;
-        int q = 0;
         try {
             br = new BufferedReader(new FileReader(secondWay));
             String line;
-            while ((line = br.readLine()) != null) {
-                q++;
-            }
-            br.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return q;
-    }
-    public static String[][] readPointsCoordinate(String secondWay) {
-        String[] ex1 = null;
-        String[][] ex2 = new String[CountLine(secondWay)][2];
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(secondWay));
-            String line, result = "";
-            int q = 0;
             int t = 0;
             while ((line = br.readLine()) != null) {
                 ex1 = line.split(" ");
-                ex2[t] = ex1;
-                t++;
+                ex2[t++] = ex1;
             }
             br.close();
         } catch (IOException e) {
