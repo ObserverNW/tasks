@@ -1,16 +1,9 @@
 package task1;
 
-import java.util.Scanner;
-
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("¬ведите " +
-                "количество элементов в массиве");
-        int n = scanner.nextInt();
-        System.out.println("¬ведите " +
-                "интервал");
-        int m = scanner.nextInt();
+        int n = Integer.parseInt(args[0]);
+        int m = Integer.parseInt(args[1]);
         System.out.println( twoElements(n, m));
     }
     static String twoElements (int n, int m){
